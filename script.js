@@ -3,7 +3,7 @@
 // @namespace   http://tampermonkey.net/
 // @description TEST (NOT MY CODE)
 // @include     https://place.manechat.net/embed
-// @version     0.3
+// @version     0.4
 // @grant       GM.xmlHttpRequest
 // @author      Ponywka, bb010g
 // @license     Apache-2.0 OR ISC
@@ -79,12 +79,49 @@ const { html, render } = mlp_uhtml;
 		});
 		rPlaceTemplateNames.push(templateName);
 	};
+	const templateStoragePrefix = "template_";
 	const addCustomTemplate = (name, url, options) =>
 	{
-		rPlaceTemplates.set(name, { canvasUrl: url, undefined, maskUrl: undefined });
+		const templateDetails = { canvasUrl: url, botUrl: options.bot ? url : undefined, maskUrl: options.mask ? url : undefined };
+		rPlaceTemplates.set(name, templateDetails);
 		rPlaceTemplateNames.push(name);
 	};
+	const addTemplateToStorage = (name, url, options) =>
+	{
+		localStorage.setItem(templateStoragePrefix + name, JSON.stringify({ url: url, options: options }));
+	};
+	const removeCustomTemplate = name =>
+	{
+		rPlaceTemplates.delete(name);
+		
+		const index = rPlaceTemplateNames.indexOf(name);
+		if (index > -1)
+		{
+			rPlaceTemplateNames.splice(index, 1);
+		}
+		
+		return index;
+	};
+	const removeTemplateFromStorage = name =>
+	{
+		localStorage.removeItem(templateStoragePrefix + name);
+	};
+	
 	addRPlaceTemplate("mlp", { bot: true, mask: true });
+	
+	for(let kvPair of Object.entries(localStorage))
+	{
+		const itemName = kvPair[0];
+		
+		if(itemName.startsWith(templateStoragePrefix))
+		{
+			const templateName = itemName.substring(templateStoragePrefix.length, itemName.length);
+			const templateDetails = JSON.parse(kvPair[1]);
+			
+			addCustomTemplate(templateName, templateDetails.url, templateDetails.options);
+		}
+	}
+	
 	let rPlaceTemplateName;
 	let rPlaceTemplate;
 	let rPlaceMask = undefined;
@@ -319,6 +356,18 @@ const { html, render } = mlp_uhtml;
 		get value() {
 			return this.values[this.valueIx];
 		}
+		switchToIndex(valueIndex)
+		{
+			if(valueIndex >= 0 && valueIndex < this.values.length)
+			{
+				this.valueIx = valueIndex;
+				this.callback(this);
+			}
+		}
+		switchToValue(valueName)
+		{
+			this.switchToIndex(this.values.indexOf(valueName));
+		}
 		onclick() {
 			this.valueIx = (this.valueIx + 1) % this.values.length;
 			this.callback(this);
@@ -450,9 +499,48 @@ const { html, render } = mlp_uhtml;
 	settings.addSetting("addTemplate", new ButtonSetting("Add your own template!", () =>
 	{
 		const name = prompt("Enter template name. Make sure it doesn't match any of the existing ones");
+		
+		if(!name)
+		{
+			return;
+		}
+		
+		if(rPlaceTemplateNames.includes(name))
+		{
+			alert("Template with this name already exists!");
+			return;
+		}
+		
 		const url = prompt("Enter template url. Image must be same size as the canvas (1000x1000 by default)");
-		addCustomTemplate(name, url, { bot: true, mask: true });
-		updateTemplate();
+		
+		if(!url)
+		{
+			return;
+		}
+		
+		const options = { bot: false, mask: false };
+		addCustomTemplate(name, url, options);
+		addTemplateToStorage(name, url, options);
+		settings.getSetting("templateName").switchToValue(name);
+	}));
+	settings.addSetting("deleteTemplate", new ButtonSetting("Delete current template", () =>
+	{
+		if(rPlaceTemplateName === "mlp") // FIXME do not hardcode this
+		{
+			alert("Can't delete default template!");
+			return;
+		}
+		
+		let deletedIndex = removeCustomTemplate(rPlaceTemplateName);
+		removeTemplateFromStorage(rPlaceTemplateName);
+		
+		if(deletedIndex < 0)
+		{
+			console.error("Something just went horribly wrong");
+			return;
+		}
+		
+		settings.getSetting("templateName").switchToIndex(deletedIndex - 1);
 	}));
 	/*
 	settings.addSetting(

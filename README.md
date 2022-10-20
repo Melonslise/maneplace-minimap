@@ -27,10 +27,18 @@ Dear Princess Celestia,
 12. ...
 13. Tampermonkey may ask you to allow cross origin sharing depending on the link you entered, just select `allow temporarily` or `always allow`.
 
-## Changes from the original repo
+## Changelog
+### 0.4
+- Templates are now saved between page reloads
+- Added new button to remove templates
+- Adding a new template automatically switches to it
+- You can no longer add templates with an existing name
+- Cancelling prompts no longer adds a broken template
+- More stuff
+### 0.3 (Changes from KH's repo)
+- Added ability to add your own templates via a new button
 - Removed all default templates except for `mlp`
 - Removed a bunch of buttons from the menu (python bot, donations, etc.) to remove clutter
-- Added ability to add your own templates via a new button
 - Also added a few extra cross origins (discord and imgur)
 - Stuff
 
