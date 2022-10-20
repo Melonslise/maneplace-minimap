@@ -14,7 +14,7 @@ Dear Princess Celestia,
 
 ## How to add your own templates
 1. Start by making a template image. All template images must be the size of the canvas (1000 x 1000 by default) so what you need to do is create a 1000 x 1000 transparent png and position your art on it exactly as you want it to appear on the canvas
-2. If you are having trouble precisely positioning your art then ask someone on the manechat (probably Leah or me) to give you an image of the current canvas so you can more easily align your art
+2. You can get the current canvas image [here](https://place.manechat.net/canvas-image) for easier alignment
 3. Upload your template somewhere (preferably discord or imgur) and get the direct image link
 4. For example, on discord you would r-click the picture and do `copy link`, on imgur you would r-click and press `copy image address`. If using discord then make sure to remove the extra stuff after the `?` in the link. E.g. `?width=612&height=612`
 5. Here's an example template to make sure you understand `https://media.discordapp.net/attachments/764482316788957215/1031583634118938714/Untitled.png`
