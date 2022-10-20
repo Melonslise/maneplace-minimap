@@ -81,7 +81,7 @@ const { html, render } = mlp_uhtml;
 	};
 	const addCustomTemplate = (name, url, options) =>
 	{
-		rPlaceTemplates.set(name, { canvasUrl: url, botUrl: options.bot ? url : undefined, maskUrl: options.mask ? url : undefined });
+		rPlaceTemplates.set(name, { canvasUrl: url, undefined, maskUrl: undefined });
 		rPlaceTemplateNames.push(name);
 	};
 	addRPlaceTemplate("mlp", { bot: true, mask: true });
