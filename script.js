@@ -461,6 +461,8 @@ const { html, render } = mlp_uhtml;
 	maskCanvas.width = rPlaceCanvas.width;
 	maskCanvas.height = rPlaceCanvas.height;
 	const maskCtx = maskCanvas.getContext("2d");
+	
+	const checkCtx = rPlaceCanvas.getContext("2d");
 
 	imageBlock.onload = function () {
 		canvas.width = this.naturalWidth;
@@ -865,7 +867,10 @@ const { html, render } = mlp_uhtml;
 	}
 
 	function autoColorPick(imageData) {
-		if (imageData.data[3] !== 255) return;
+		if (imageData.data[3] !== 255) {
+			embed.selectedColor = undefined;
+			return;
+		}
 
 		const r = imageData.data[0];
 		const g = imageData.data[1];
@@ -881,6 +886,41 @@ const { html, render } = mlp_uhtml;
 
 		embed.selectedColor = palette[correctColorID][3];
 	}
+	function checkIfColorRight(imageData, currentImageData) {
+    		if (imageData.data[3] !== 255) return;
+
+    		const correct_r = imageData.data[0];
+    		const correct_g = imageData.data[1];
+    		const correct_b = imageData.data[2];
+
+    		let correct_diff = [];
+    		for (const color of palette) {
+      			correct_diff.push(Math.abs(correct_r - color[0]) + Math.abs(correct_g - color[1]) + Math.abs(correct_b - color[2]));
+    		}
+    		let correctColorID = 0;
+    		for (let i = 0; i < correct_diff.length; i++) {
+      			if (correct_diff[correctColorID] > correct_diff[i]) correctColorID = i;
+    		}
+
+    		const r = currentImageData.data[0];
+    		const g = currentImageData.data[1];
+    		const b = currentImageData.data[2];
+
+    		let diff = [];
+    		for (const color of palette) {
+      			diff.push(Math.abs(r - color[0]) + Math.abs(g - color[1]) + Math.abs(b - color[2]));
+    		}
+    		let colorID = 0;
+    		for (let i = 0; i < diff.length; i++) {
+      			if (diff[colorID] > diff[i]) colorID = i;
+    		}
+
+    		if (colorID == correctColorID) {
+      			crosshairBlock.style["border-color"] = "#00ff00";
+    		} else {
+      			crosshairBlock.style["border-color"] = "red";
+    		}
+  	}
 
 	function intToHex(int1) {
 		return ("0" + int1.toString(16)).slice(-2);
@@ -907,14 +947,18 @@ const { html, render } = mlp_uhtml;
 
 	posParser.addEventListener("posChanged", () => {
 		recalculateImagePos();
-		if (settings.getSetting("autoColor").enabled) {
-			try {
-				const imageData = ctx.getImageData(posParser.pos.x, posParser.pos.y, 1, 1);
-				autoColorPick(imageData);
-			} catch (e) {
-				console.error(e);
-			}
-		}
+
+    		const imageData = ctx.getImageData(posParser.pos.x, posParser.pos.y, 1, 1);
+    		const currentImageData = checkCtx.getImageData(posParser.pos.x, posParser.pos.y, 1, 1);
+
+    		if (settings.getSetting("autoColor").enabled) {
+      			try {
+        			autoColorPick(imageData);
+     			} catch (e) {
+        			console.error(e);
+      			}
+    		}
+    		checkIfColorRight(imageData, currentImageData);
 	});
 
 	const botCanvas = document.createElement("canvas");
