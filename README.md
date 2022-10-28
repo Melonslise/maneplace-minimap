@@ -28,6 +28,10 @@ Dear Princess Celestia,
 13. Tampermonkey may ask you to allow cross origin sharing depending on the link you entered, just select `allow temporarily` or `always allow`.
 
 ## Changelog
+### 0.4.1
+- Added red/green crosshair outlines when hovering over a pixel indicating whether it's correct (thanks Leah)
+- Disabled auto color picking on empty pixels (thanks Leah)
+- Removed bot buttons
 ### 0.4
 - Templates are now saved between page reloads
 - Added new button to remove templates

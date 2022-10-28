@@ -3,7 +3,7 @@
 // @namespace   http://tampermonkey.net/
 // @description TEST (NOT MY CODE)
 // @include     https://place.manechat.net/embed
-// @version     0.4
+// @version     0.4.1
 // @grant       GM.xmlHttpRequest
 // @author      Ponywka, bb010g
 // @license     Apache-2.0 OR ISC
@@ -558,17 +558,6 @@ const { html, render } = mlp_uhtml;
 			settings.getSetting("bot").enabled = false;
 			updateTemplate();
 		})
-	);
-	settings.addSetting(
-		"bot",
-		new CheckboxSetting("Bot", false, function (botSetting) {
-			settings.getSetting("autoColor").enabled = false;
-			updateTemplate();
-		})
-	);
-	settings.addSetting(
-		"botstability",
-		new CheckboxSetting("Bot stability (🔇 Need to mute tab)", false)
 	);
 	settings.addSetting(
 		"pixelDisplayProgress",
