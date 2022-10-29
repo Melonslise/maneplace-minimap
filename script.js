@@ -3,7 +3,7 @@
 // @namespace   http://tampermonkey.net/
 // @description TEST (NOT MY CODE)
 // @include     https://place.manechat.net/embed
-// @version     0.4.1
+// @version     0.4.2
 // @grant       GM.xmlHttpRequest
 // @author      Ponywka, bb010g
 // @license     Apache-2.0 OR ISC
@@ -492,11 +492,13 @@ const { html, render } = mlp_uhtml;
 	const noSleepAudio = mlpMinimapBlock.querySelector("#noSleep");
 	noSleepAudio.volume = 0.1;
 
+	/*
 	setInterval(() => {
 		if (settings.getSetting("botstability").enabled) {
 			noSleepAudio.play();
 		}
 	}, 30000);
+	*/
 
 	settings.addSetting("addTemplate", new ButtonSetting("Add your own template!", () =>
 	{
@@ -555,7 +557,7 @@ const { html, render } = mlp_uhtml;
 	settings.addSetting(
 		"autoColor",
 		new CheckboxSetting("Auto color picker", false, function (autoColorSetting) {
-			settings.getSetting("bot").enabled = false;
+			// settings.getSetting("bot").enabled = false;
 			updateTemplate();
 		})
 	);
@@ -644,10 +646,8 @@ const { html, render } = mlp_uhtml;
 
 	updateTemplate = function () {
 		botLock = true;
-		const rPlaceTemplateUrl =
-			rPlaceTemplate.botUrl !== undefined && settings.getSetting("bot").enabled
-				? rPlaceTemplate.botUrl
-				: rPlaceTemplate.canvasUrl;
+		const rPlaceTemplateUrl = rPlaceTemplate.canvasUrl
+			// rPlaceTemplate.botUrl !== undefined && settings.getSetting("bot").enabled ? rPlaceTemplate.botUrl : rPlaceTemplate.canvasUrl;
 		fetchTemplate(rPlaceTemplateUrl)
 			.then((array) => {
 				recalculateImagePos();
@@ -1018,6 +1018,7 @@ const { html, render } = mlp_uhtml;
         >${percentage}% (${nMissingPixels}/${nCisPixels})</span
       >`;
 
+			/*
 			if (settings.getSetting("bot").enabled && !botLock) {
 				if (rPlaceTemplate.botUrl === undefined) {
 					return;
@@ -1058,6 +1059,8 @@ const { html, render } = mlp_uhtml;
 					await waitMs(botAfterPlaceTimeout);
 				}
 			}
+			
+			*/
 
 			await waitMs(botTimeout);
 		}
